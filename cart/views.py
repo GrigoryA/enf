@@ -6,7 +6,7 @@ from django.contrib import messages
 from django.db import transaction
 from main.models import Product, ProductSize
 from .models import Cart, CartItem
-from .forms import AddToCartForm, UpdateCartItemForm
+from .forms import AddToCartForm
 import json
 
 
@@ -25,6 +25,19 @@ class CartMixin:
         request.session['cart_id'] = cart.id
         request.session.modified = True
         return cart
+
+
+class CartModalView(CartMixin, View):
+    def get(self, request):
+        cart = self.get_cart(request)
+        context = {
+            'cart': cart,
+            'cart_items': cart.items.select_related(
+                'product',
+                'product_size__size'
+            ).order_by('-added_at')
+        }
+        return TemplateResponse(request, 'cart/cart_modal.html', context)
 
 
 class AddToCartView(CartMixin, View):
