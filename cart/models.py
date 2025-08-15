@@ -21,7 +21,7 @@ class Cart(models.Model):
         return sum(item.total_price for item in self.items.all())
 
     def add_product(self, product, product_size, quantity=1):
-        cart_item, created = CartItem.objecrs.get_or_create(
+        cart_item, created = CartItem.objects.get_or_create(
             cart=self,
             product=product,
             product_size=product_size,
@@ -47,7 +47,7 @@ class Cart(models.Model):
             item = self.items.get(id=item_id)
             if quantity > 0:
                 item.quantity = quantity
-                item.save()
+                item.sav()
             else:
                 item.delete()
             return True
@@ -74,4 +74,4 @@ class CartItem(models.Model):
 
     @property
     def total_price(self):
-        return Decimal(str(self.product.price) * self.quantity)
+        return Decimal(str(self.product.price)) * self.quantity

@@ -140,8 +140,7 @@
 
         <div class="mt-8 space-y-4">
           <a href="#" class="block text-sm font-medium text-gray-900 hover:text-gray-700 py-2">SEARCH</a>
-
-          <a class="text-sm font-medium text-gray-900 uppercase hover:text-gray-600">ACCOUNT</a>
+          <a href="#" class="text-sm font-medium text-gray-900 uppercase hover:text-gray-600">ACCOUNT</a>
           <a href="#" id="mobileCart" class="block text-sm font-medium text-gray-900 hover:text-gray-700 py-2">CART (0)</a>
         </div>
       </div>
@@ -161,8 +160,8 @@
           <!-- Logo -->
           <div class="flex-shrink-0">
             <a href="{% url 'main:index' %}" hx-get="{% url 'main:index' %}" hx-target="#main-content" hx-push-url="true">
-              <h1 class="text-sm sm:text-lg font-bold tracking-tight text-left">
-                ENFANTS RICHES<br />
+              <h1 class="text-sm sm:text-lg font-bold tracking-tight text-center">
+                ENFANTS RICHES <br />
                 DÉPRIMÉS
               </h1>
             </a>
@@ -180,7 +179,7 @@
             <div class="relative" id="mobile-search-wrapper">
               <button id="mobile-search-toggle" hx-get="{% url 'main:catalog_all' %}?show_search=true" hx-target="#mobile-search-wrapper" hx-swap="innerHTML" class="text-sm font-medium uppercase hover:text-gray-600">SEARCH</button>
             </div>
-            <a class="text-sm font-medium text-gray-900 uppercase hover:text-gray-600">ACCOUNT</a>
+            <a href="№" class="text-sm font-medium text-gray-900 uppercase hover:text-gray-600">ACCOUNT</a>
             <a href="#" id="desktopCart" class="text-sm font-medium text-gray-900 hover:text-gray-700">CART (0)</a>
           </div>
 
@@ -243,6 +242,45 @@
         // Close mobile menu after navigation
         document.addEventListener('htmx:afterRequest', function () {
           closeMobileMenu()
+        })
+      
+        // Cart functionality
+        const desktopCart = document.getElementById('desktopCart')
+        const mobileCart = document.getElementById('mobileCart')
+        const mobileCartHeader = document.getElementById('mobileCartHeader')
+      
+        // Get initial cart count
+        updateCartCount()
+      
+        function updateHeaderCartCount(count) {
+          const cartText = `CART (${count})`
+          if (desktopCart) desktopCart.textContent = cartText
+          if (mobileCart) mobileCart.textContent = cartText
+          if (mobileCartHeader) mobileCartHeader.textContent = cartText
+        }
+      
+        function updateCartCount() {
+          fetch('{% url "cart:cart_count" %}')
+            .then((response) => response.json())
+            .then((data) => {
+              updateHeaderCartCount(data.total_items)
+            })
+        }
+      
+        function openCart() {
+          htmx.ajax('GET', '{% url "cart:cart_modal" %}', {
+            target: '#cart-container',
+            swap: 'innerHTML'
+          })
+        }
+      
+        ;[desktopCart, mobileCart, mobileCartHeader].forEach((cartLink) => {
+          if (cartLink) {
+            cartLink.addEventListener('click', function (e) {
+              e.preventDefault()
+              openCart()
+            })
+          }
         })
       
         // Close mobile menu on window resize
