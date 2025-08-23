@@ -1,13 +1,15 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse
 from django.http import HttpResponse
 from django.template.response import TemplateResponse
-from .forms import CustomUserCreationForm, CustomUserLoginForm, CustomUserUpdateForm
+from .forms import CustomUserCreationForm, CustomUserLoginForm, \
+    CustomUserUpdateForm
 from .models import CustomUser
 from django.contrib import messages
 from main.models import Product
+from orders.models import Order
 
 
 def register(request):
@@ -46,12 +48,12 @@ def profile_view(request):
     else:
         form = CustomUserUpdateForm(instance=request.user)
 
-    recommented_products = Product.objects.all().order_by('id')[:3]
+    recommended_products = Product.objects.all().order_by('id')[:3]
 
     return TemplateResponse(request, 'users/profile.html', {
         'form': form,
         'user': request.user,
-        'recommended_products': recommented_products
+        'recommended_products': recommended_products
     })
 
 
@@ -64,7 +66,8 @@ def account_details(request):
 @login_required(login_url='/users/login')
 def edit_account_details(request):
     form = CustomUserUpdateForm(instance=request.user)
-    return TemplateResponse(request, 'users/partials/edit_account_details.html', {'user': request.user, 'form': form})
+    return TemplateResponse(request, 'users/partials/edit_account_details.html',
+                            {'user': request.user, 'form': form})
 
 
 @login_required(login_url='/users/login')
@@ -92,3 +95,15 @@ def logout_view(request):
     if request.headers.get('HX-Request'):
         return HttpResponse(headers={'HX-Redirect': reverse('main:index')})
     return redirect('main:index')
+
+
+@login_required
+def order_history(request):
+    orders = Order.objects.filter(user=request.user).order_by('-created_at')
+    return TemplateResponse(request, 'users/partials/order_history.html', {'orders': orders})
+
+
+@login_required
+def order_detail(request, order_id):
+    order = get_object_or_404(Order, id=order_id, user=request.user)
+    return TemplateResponse(request, 'users/partials/order_detail.html', {'order': order})
