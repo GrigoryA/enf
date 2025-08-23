@@ -5,7 +5,7 @@ from django.utils.html import strip_tags
 from django.core.validators import RegexValidator
 
 
-User = get_user_model
+User = get_user_model()
 
 
 class CustomUserCreationForm(UserCreationForm):
@@ -54,8 +54,8 @@ class CustomUserLoginForm(AuthenticationForm):
     )
 
     def clean(self):
-        email = self.clean_data.get('username')
-        password = self.clean_data.get('password')
+        email = self.cleaned_data.get('username')
+        password = self.cleaned_data.get('password')
 
         if email and password:
             self.user_cache = authenticate(
@@ -117,7 +117,7 @@ class CustomUserUpdateForm(forms.ModelForm):
         cleaned_data = super().clean()
         if not cleaned_data.get('email'):
             cleaned_data['email'] = self.instance.email
-        for field in ['company', 'address1', 'address2', 'city', 'country', 'provinvce', 'postal_code', 'phone']:
+        for field in ['company', 'address1', 'address2', 'city', 'country', 'province', 'postal_code', 'phone']:
             if cleaned_data.get(field):
                 cleaned_data[field] = strip_tags(cleaned_data[field])
         return cleaned_data
