@@ -1,0 +1,10 @@
+{% extends 'main/base.html' %}
+{% load static %}
+
+{% block title %}
+  Order Successfully Placed
+{% endblock %}
+
+{% block content %}
+  {% include 'payment/stripe_success_content.html' %}
+{% endblock %}

@@ -34,7 +34,7 @@ class Order(models.Model):
         max_length=20, choices=STATUS_CHOICES, default='pending')
     payment_provider = models.CharField(
         max_length=20, choices=PAYMENT_PROVIDER_CHOICES, null=True, blank=True)
-    stripe_payment_intend_id = models.CharField(
+    stripe_payment_intent_id = models.CharField(
         max_length=255, blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

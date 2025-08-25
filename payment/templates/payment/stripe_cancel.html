@@ -1,0 +1,10 @@
+{% extends 'main/base.html' %}
+{% load static %}
+
+{% block title %}
+  Order Cancelled
+{% endblock %}
+
+{% block content %}
+  {% include 'payment/stripe_cancel_content.html' %}
+{% endblock %}
