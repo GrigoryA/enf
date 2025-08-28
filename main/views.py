@@ -30,7 +30,6 @@ class CatalogView(TemplateView):
         'min_price': lambda queryset, value: queryset.filter(price_gte=value),
         'max_price': lambda queryset, value: queryset.filter(price_lte=value),
         'size': lambda queryset, value: queryset.filter(product_sizes__size__name=value),
-
     }
 
     def get_context_data(self, **kwargs):
@@ -87,7 +86,7 @@ class CatalogView(TemplateView):
             template = 'main/filter_modal.html' if request.GET.get(
                 'show_filters') == 'true' else 'main/catalog.html'
             return TemplateResponse(request, template, context)
-        return TemplateResponse(request, self.template_name, context)
+        return TemplateResponse(request, self.template, context)
 
 
 class ProductDetailView(DetailView):

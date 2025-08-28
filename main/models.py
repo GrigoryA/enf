@@ -25,11 +25,11 @@ class Size(models.Model):
 class ProductSize(models.Model):
     product = models.ForeignKey('Product', on_delete=models.CASCADE,
                                 related_name='product_sizes')
-    size = models.ForeignKey('Size', on_delete=models.CASCADE)
+    size = models.ForeignKey(Size, on_delete=models.CASCADE)
     stock = models.PositiveIntegerField(default=0)
 
     def __str__(self):
-        return f"{self.size.name} ({self.stock}, in stock) for {self.product.name}"
+        return f"{self.size.name} ({self.stock} in stock) for {self.product.name}"
 
 
 class Product(models.Model):
