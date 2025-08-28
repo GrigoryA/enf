@@ -10,8 +10,8 @@ class CartItemInline(admin.TabularInline):
 
 @admin.register(Cart)
 class CartAdmin(admin.ModelAdmin):
-    list_display = ('session_key', 'total_items',
-                    'subtotal', 'created_at', 'updated_at')
+    list_display = ('session_key', 'total_items', 'subtotal', 'created_at',
+                    'updated_at')
     list_filter = ('created_at', 'updated_at')
     search_fields = ('session_key',)
     inlines = [CartItemInline]

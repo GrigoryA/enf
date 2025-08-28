@@ -19,7 +19,7 @@ class CartMixin:
             request.session.create()
 
         cart, created = Cart.objects.get_or_create(
-            session_key=request.session.session.key
+            session_key=request.session.session_key
         )
 
         request.session['cart_id'] = cart.id
@@ -65,7 +65,7 @@ class AddToCartView(CartMixin, View):
             product_size = product.product_sizes.filter(stock__gt=0).first()
             if not product_size:
                 return JsonResponse({
-                    'error': 'No sizes available',
+                    'error': 'No sizes available'
                 }, status=400)
 
         quantity = form.cleaned_data['quantity']
@@ -73,6 +73,7 @@ class AddToCartView(CartMixin, View):
             return JsonResponse({
                 'error': f'Only {product_size.stock} items available'
             }, status=400)
+
         existing_item = cart.items.filter(
             product=product,
             product_size=product_size,
@@ -117,7 +118,8 @@ class UpdateCartItemView(CartMixin, View):
         else:
             if quantity > cart_item.product_size.stock:
                 return JsonResponse({
-                    'error': f'Only {cart_item.product_size.stock} items available'}, status=400)
+                    'error': f'Only {cart_item.product_size.stock} items available'
+                }, status=400)
 
             cart_item.quantity = quantity
             cart_item.save()
@@ -163,7 +165,7 @@ class CartCountView(CartMixin, View):
         cart = self.get_cart(request)
         return JsonResponse({
             'total_items': cart.total_items,
-            'subtotal': float(cart.subtotal),
+            'subtotal': float(cart.subtotal)
         })
 
 
@@ -180,7 +182,7 @@ class ClearCartView(CartMixin, View):
                 'cart': cart
             })
         return JsonResponse({
-            'success': True,
+            'succes': True,
             'message': 'Cart cleared'
         })
 
