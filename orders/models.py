@@ -13,10 +13,11 @@ class Order(models.Model):
     )
     PAYMENT_PROVIDER_CHOICES = (
         ('stripe', 'Stripe'),
+        ('heleket', 'Heleket'),
     )
 
-    user = models.ForeignKey(settings.AUTH_USER_MODEL,
-                             on_delete=models.CASCADE, related_name='orders')
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE,
+                             related_name='orders')
     first_name = models.CharField(max_length=50)
     last_name = models.CharField(max_length=50)
     email = models.EmailField(max_length=254)
@@ -35,6 +36,8 @@ class Order(models.Model):
     payment_provider = models.CharField(
         max_length=20, choices=PAYMENT_PROVIDER_CHOICES, null=True, blank=True)
     stripe_payment_intent_id = models.CharField(
+        max_length=255, blank=True, null=True)
+    heleket_payment_id = models.CharField(
         max_length=255, blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
